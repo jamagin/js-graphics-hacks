@@ -26,7 +26,7 @@ function munch() {
     }
     ctx.putImageData(image_data, 0, 0);
     t += 5;
-    if (t > dim) {
+    if (t > dim * 2) {
       t = 0;
     }
   }
