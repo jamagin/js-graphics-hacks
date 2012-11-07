@@ -24,7 +24,7 @@ function munch() {
     t++;
   }
 
-  var interval_id = window.setInterval(do_one_frame, 0);
+  var interval_id = window.setInterval(do_one_frame, 50);
 }
 
 window.onload = munch;
