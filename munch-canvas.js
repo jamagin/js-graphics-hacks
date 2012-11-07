@@ -16,9 +16,9 @@ function munch() {
     for (y = 0; y < canvas.height; y++) {
       for (x = 0; x < canvas.width; x++) {
         var offset = y * canvas.width * 4 + x * 4;
-        image_data.data[offset] = ((t - canvas.height) - (x ^ y));
-        image_data.data[offset + 1] = (t - (x ^ y));
-        image_data.data[offset + 2] = ((t - canvas.height * 2) - (x ^ y));
+        image_data.data[offset] = (t - (x ^ y)) % 256;
+        image_data.data[offset + 1] = ((t - 128) - (x ^ y)) % 256;
+        image_data.data[offset + 2] = ((t - 64) - (x ^ y)) % 256;
       }
     }
     ctx.putImageData(image_data, 0, 0);
