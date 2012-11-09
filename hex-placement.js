@@ -10,21 +10,34 @@ function hex_placement () {
   // breaking the canvas into 2500 regions
   // and within each is a list of points placed
   // in that region
+  var cells_across = 50;
   var already_placed = [];
-  for (var x = 0; x < 50; x++) {
+  for (var x = 0; x < cells_across; x++) {
     already_placed[x] = [];
-    for (var y = 0; y < 50; y++) {
+    for (var y = 0; y < cells_across; y++) {
       already_placed[x][y] = [];
     }
   }
 
+  // lots of stupid handling of the edges of the canvas and grid in this function
   function will_collide(p) {
-    var grid_x = Math.round(p[0]/50);
-    var grid_y = Math.round(p[1]/50);
+    if (p[0] < radius || p[1] < radius ||
+        p[0] > canvas.width - radius ||
+        p[1] > canvas.height - radius) {
+      return true;
+    }
+    var grid_x = Math.round(p[0]/cells_across);
+    var grid_y = Math.round(p[1]/cells_across);
     // need to check around it
-    var around = Math.ceil(2*radius / 50);
+    var around = Math.ceil(2*radius / cells_across);
     for (var gx = grid_x - around; gx < grid_x + around; gx++) {
+      if (gx < 0 || gx > cells_across) {
+        continue;
+      }
       for (var gy = grid_y - around; gy < grid_y + around; gy++) {
+        if (gy < 0 || gy > cells_across) {
+          continue;
+        }
         for(var i = 0; i < already_placed[gx][gy].length; i++) {
           if (distance(p, already_placed[gx][gy][i]) < 2 * radius) {
             return true;
@@ -36,8 +49,8 @@ function hex_placement () {
   }
   
   function circle_at(p) {
-    var grid_x = Math.round(p[0]/50);
-    var grid_y = Math.round(p[1]/50);
+    var grid_x = Math.round(p[0]/cells_across);
+    var grid_y = Math.round(p[1]/cells_across);
     already_placed[grid_x][grid_y][(already_placed[grid_x][grid_y]).length] = p;
     ctx.beginPath();
     ctx.arc(p[0], p[1], radius, 0, Math.PI*2, true); 
@@ -73,9 +86,7 @@ function hex_placement () {
       console.log('i ' + i);
       var cx = candidates[i][0];
       var cy = candidates[i][1];
-      if (cx > radius && cx < canvas.width - radius &&
-          cy > 0 && cy < canvas.height - radius &&
-          !will_collide([cx, cy])) {
+      if (!will_collide([cx, cy])) {
         console.log('match');
         return [cx, cy];
       }
