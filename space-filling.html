@@ -6,7 +6,19 @@
 </head>
 
 <body>
-  <canvas id="maincanvas"></canvas>
+  <p>
+    Iterations:
+    <input type="text" min="1" max="13" value="10" id="iterations" />
+    Rules:
+    <textarea id="rules" name="rules" rows="5" style="width:60%">
+  {
+  "A": "+BF-AFA-FB+",
+  "B" : "-AF+BFB+FA-"
+  }
+  </textarea>
+  </p>
+  <p>Click below for to rerun with different values and origin:</p>
+  <canvas id="maincanvas" style="border: 1px solid black"></canvas>
 </body>
 
 </html>

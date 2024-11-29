@@ -6,15 +6,11 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 var ctx = canvas.getContext('2d');
 
-var image_data = ctx.createImageData(canvas.width, canvas.height);
-
-function l_system() {
+function l_system(rules_string) {
   // this one is for a hilbert curve
   var state = "A"; // the axiom
-  var rules = {
-    "A": "+BF-AFA-FB+",
-    "B": "-AF+BFB+FA-",
-  };
+  var rules = JSON.parse(rules_string);
+  console.log(rules);
   return function () {
     var output = "";
     for (let i = 0; i < state.length; i++) {
@@ -30,16 +26,23 @@ function l_system() {
   }
 }
 
-function do_one_frame() {
-  var produce = l_system();
+function do_one_frame(event) {
+  var x = 0;
+  var y = 0;
+  if (event) {
+    x = event.pageX - canvas.offsetLeft;
+    y = event.pageY - canvas.offsetTop;
+  }
+  console.log([x, y]);
+  var image_data = ctx.createImageData(canvas.width, canvas.height);
+  var iterations = document.getElementById("iterations").value;
+  var produce = l_system(document.getElementById("rules").value);
   var moves;
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < iterations - 1; i++) {
     moves = produce();
   }
   var moves = produce();
   var pixel_to_unit_interval = pixel_range_to_unit_interval(moves.match(/F/g).length);
-  var x = 0;
-  var y = 0;
   var dir = 1;
   var accum = 0;
   function plot() {
@@ -100,4 +103,5 @@ function do_one_frame() {
   ctx.putImageData(image_data, 0, 0);
 }
 
+document.getElementById("maincanvas").onclick = do_one_frame;
 do_one_frame();
