@@ -29,6 +29,8 @@ function l_system(rules_string) {
 function do_one_frame(event) {
   var x = 0;
   var y = 0;
+  var max_x = 0;
+  var max_y = 0;
   if (event) {
     x = event.pageX - canvas.offsetLeft;
     y = event.pageY - canvas.offsetTop;
@@ -47,6 +49,8 @@ function do_one_frame(event) {
   var accum = 0;
   function plot() {
     accum++;
+    max_x = Math.max(x, max_x);
+    max_y = Math.max(y, max_y);
     var offset = (y * canvas.width + x) * 4;
     [image_data.data[offset],
     image_data.data[offset + 1],
@@ -101,6 +105,8 @@ function do_one_frame(event) {
     }
   }
   ctx.putImageData(image_data, 0, 0);
+  canvas.width = max_x + 1;
+  canvas.height = max_y + 1;
 }
 
 document.getElementById("maincanvas").onclick = do_one_frame;
