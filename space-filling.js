@@ -104,9 +104,9 @@ function do_one_frame(event) {
         break;
     }
   }
-  ctx.putImageData(image_data, 0, 0);
   canvas.width = max_x + 1;
   canvas.height = max_y + 1;
+  ctx.putImageData(image_data, 0, 0);
 }
 
 document.getElementById("maincanvas").onclick = do_one_frame;
