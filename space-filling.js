@@ -10,7 +10,6 @@ function l_system(rules_string) {
   // this one is for a hilbert curve
   var state = "A"; // the axiom
   var rules = JSON.parse(rules_string);
-  console.log(rules);
   return function () {
     var output = "";
     for (let i = 0; i < state.length; i++) {
@@ -27,17 +26,23 @@ function l_system(rules_string) {
 }
 
 function do_one_frame(event) {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
   var x = 0;
   var y = 0;
   var max_x = 0;
   var max_y = 0;
-  if (event) {
-    x = event.pageX - canvas.offsetLeft;
-    y = event.pageY - canvas.offsetTop;
-  }
-  console.log([x, y]);
+  // if (event) {
+  //   x = event.pageX - canvas.offsetLeft;
+  //   y = event.pageY - canvas.offsetTop;
+  // }
   var image_data = ctx.createImageData(canvas.width, canvas.height);
   var iterations = document.getElementById("iterations").value;
+  var hsvStart = document.getElementById("hsvStart").value.split(",").map(Number);
+  var hsvEnd = document.getElementById("hsvEnd").value.split(",").map(Number);
+  var hsvSpan = hsvStart.map(function (e, i) {
+    return hsvEnd[i] - e;
+  });
   var produce = l_system(document.getElementById("rules").value);
   var moves;
   for (let i = 0; i < iterations - 1; i++) {
@@ -47,6 +52,13 @@ function do_one_frame(event) {
   var pixel_to_unit_interval = pixel_range_to_unit_interval(moves.match(/F/g).length);
   var dir = 1;
   var accum = 0;
+
+  function interpHsv(unitDistance) {
+    return hsvStart.map(function (e, i) {
+      return e + unitDistance * hsvSpan[i];
+    });
+  }
+
   function plot() {
     accum++;
     max_x = Math.max(x, max_x);
@@ -54,7 +66,7 @@ function do_one_frame(event) {
     var offset = (y * canvas.width + x) * 4;
     [image_data.data[offset],
     image_data.data[offset + 1],
-    image_data.data[offset + 2]] = hsv_to_rgb(pixel_to_unit_interval(accum), 1, 1);
+    image_data.data[offset + 2]] = hsv_to_rgb(interpHsv(pixel_to_unit_interval(accum)));
     image_data.data[offset + 3] = 255; // alpha channel
   }
 
@@ -104,10 +116,10 @@ function do_one_frame(event) {
         break;
     }
   }
-  canvas.width = max_x + 1;
-  canvas.height = max_y + 1;
+  // canvas.width = max_x + 1;
+  // canvas.height = max_y + 1;
   ctx.putImageData(image_data, 0, 0);
 }
 
-document.getElementById("maincanvas").onclick = do_one_frame;
+document.getElementById("go").onclick = do_one_frame;
 do_one_frame();
