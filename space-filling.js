@@ -2,8 +2,8 @@ import { pixel_range_to_unit_interval, hsv_to_rgb } from "./utils.js";
 
 
 var canvas = document.getElementById('maincanvas');
-var squareDim = Math.min(window.innerHeight, window.innerWidth);
-canvas.width = canvas.height = squareDim;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 var ctx = canvas.getContext('2d');
 
 function l_system(rules_string) {
